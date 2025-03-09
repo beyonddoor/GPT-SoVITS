@@ -16,7 +16,7 @@ asr_dir = "output/asr_opt"
 ################################################################
 
 uvr(
-    model_name="onnx_dereverb_By_FoxJoy",
+    model_name="HP2_all_vocals",  #fixme: change it
     inp_root="",
     save_root_vocal=vocal_dir,
     paths=["tools/uvr5/test_data/1.wav"],       # fixme: change to the path of the input file
