@@ -6,35 +6,70 @@ from subprocess import Popen
 
 from GPT_SoVITS.inference_webui import get_tts_wav
 
+################################################################
+
+vocal_dir = "output/uvr5_opt"
+slicer_dir = "output/slicer_opt"
+denoise_dir = "output/denoise_opt"
+asr_dir = "output/asr_opt"
+
+################################################################
+
 uvr(
     model_name="onnx_dereverb_By_FoxJoy",
-    inp_root="tools/uvr5/test_data",
-    save_root_vocal="tools/uvr5/test_data",
-    paths=["tools/uvr5/test_data/1.wav"],
-    save_root_ins="tools/uvr5/test_data",
-    agg="mean",
-    format0="wav"
+    inp_root="",
+    save_root_vocal=vocal_dir,
+    paths=["tools/uvr5/test_data/1.wav"],       # fixme: change to the path of the input file
+    save_root_ins=vocal_dir,
+    agg=10,
+    format0="m4a"
 )
+# 输出到save_root_vocal和save_root_ins
 
 # os.system('python tools/cmd-denoise.py -i "output/slicer_opt" -o "output/uvr5_opt"')
 
-print('start slice')
-p = Popen('python tools/slice_audio.py "output/uvr5_opt" "output/slicer_opt" -34 4000 300 10 500 0.9 0.25 0 4', shell=True)
+
+print(f'start slice to {slicer_dir}')
+p = Popen(f'python tools/slice_audio.py {vocal_dir} "{slicer_dir}" -34 4000 300 10 500 0.9 0.25 0 4', shell=True)
 print(p)
-p = Popen('python tools/slice_audio.py "output/uvr5_opt" "output/slicer_opt" -34 4000 300 10 500 0.9 0.25 1 4', shell=True)
+p = Popen(f'python tools/slice_audio.py {vocal_dir} "{slicer_dir}" -34 4000 300 10 500 0.9 0.25 1 4', shell=True)
 print(p)
-p = Popen('python tools/slice_audio.py "output/uvr5_opt" "output/slicer_opt" -34 4000 300 10 500 0.9 0.25 2 4', shell=True)
+p = Popen(f'python tools/slice_audio.py {vocal_dir} "{slicer_dir}" -34 4000 300 10 500 0.9 0.25 2 4', shell=True)
 print(p)
-p = Popen('python tools/slice_audio.py "output/uvr5_opt" "output/slicer_opt" -34 4000 300 10 500 0.9 0.25 3 4', shell=True)
+p = Popen(f'python tools/slice_audio.py {vocal_dir} "{slicer_dir}" -34 4000 300 10 500 0.9 0.25 3 4', shell=True)
 print(p)
 
-print('start denoise')
-p = Popen('"python" tools/cmd-denoise.py -i "output/slicer_opt" -o "output/denoise_opt" -p float16', shell=True)
+
+print(f'start denoise to {denoise_dir}')
+p = Popen(f'"python" tools/cmd-denoise.py -i "{slicer_dir}" -o "{denoise_dir}" -p float16', shell=True)
 print(p)
 
-print('start asr')
-p = Popen('"python" tools/asr/funasr_asr.py -i "output/denoise_opt" -o "output/asr_opt" -s large -l zh -p float32', shell=True)
+
+print(f'start asr to {asr_dir}')
+p = Popen(f'"python" tools/asr/funasr_asr.py -i "{denoise_dir}" -o "{asr_dir}" -s large -l zh -p float32', shell=True)
 print(p)
+
+'''
+                config={
+                    "inp_text":inp_text,
+                    "inp_wav_dir":inp_wav_dir,
+                    "exp_name":exp_name,
+                    "opt_dir":opt_dir,
+                    "bert_pretrained_dir":bert_pretrained_dir,
+                    "is_half": str(is_half)
+                }
+                gpu_names=gpu_numbers1a.split("-")
+                all_parts=len(gpu_names)
+                for i_part in range(all_parts):
+                    config.update(
+                        {
+                            "i_part": str(i_part),
+                            "all_parts": str(all_parts),
+                            "_CUDA_VISIBLE_DEVICES": fix_gpu_number(gpu_names[i_part]),
+                        }
+                    )
+                    os.environ.update(config)
+'''
 
 p = Popen('python GPT_SoVITS/prepare_datasets/1-get-text.py')
 print(p)
