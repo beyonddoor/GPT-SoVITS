@@ -16,7 +16,7 @@ def hook_os_system():
     def _hook_os_system(*args, **kwargs):
         print("---> system", args, kwargs)
         return origin_func(*args, **kwargs)
-    os.open = _hook_os_system
+    os.system = _hook_os_system
 
 def hook_env():
     origin_func = os.environ.update
