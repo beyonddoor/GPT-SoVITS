@@ -1,3 +1,4 @@
+import hook_proc
 import os,sys
 if len(sys.argv)==1:sys.argv.append('v2')
 version="v1"if sys.argv[1]=="v1" else"v2"
@@ -52,6 +53,15 @@ import shutil
 import pdb
 import subprocess
 from subprocess import Popen
+
+# original_popen = Popen
+# def hooked_popen(*args, **kwargs):
+#     print(f"---------> subprocess.Popen called with args: {args}, kwargs: {kwargs}")
+#     return original_popen(*args, **kwargs)  # Call the original Popen
+# Popen = hooked_popen
+# subprocess.Popen = hooked_popen
+
+
 import signal
 from config import python_exec,infer_device,is_half,exp_root,webui_port_main,webui_port_infer_tts,webui_port_uvr5,webui_port_subfix,is_share
 from tools.i18n.i18n import I18nAuto, scan_language_list

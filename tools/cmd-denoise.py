@@ -1,3 +1,7 @@
+'''
+降噪
+'''
+
 import os,argparse
 import traceback
 

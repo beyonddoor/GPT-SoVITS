@@ -510,7 +510,31 @@ def audio_sr(audio,sr):
 ##ref_wav_path+prompt_text+prompt_language+text(单个)+text_language+top_k+top_p+temperature
 # cache_tokens={}#暂未实现清理机制
 cache= {}
-def get_tts_wav(ref_wav_path, prompt_text, prompt_language, text, text_language, how_to_cut=i18n("不切"), top_k=20, top_p=0.6, temperature=0.6, ref_free = False,speed=1,if_freeze=False,inp_refs=None,sample_steps=8,if_sr=False,pause_second=0.3):
+def get_tts_wav(ref_wav_path, prompt_text, prompt_language, text, text_language, how_to_cut=i18n("不切"), 
+                top_k=20, top_p=0.6, temperature=0.6, ref_free = False,speed=1,
+                if_freeze=False,inp_refs=None,sample_steps=8,if_sr=False,pause_second=0.3):
+    '''
+    ref_wav_path: str, 参考音频路径
+    prompt_text: str, 参考文本
+    prompt_language: str, 参考文本语种
+    text: str, 推理文本
+    text_language: str, 推理文本语种
+    how_to_cut: str, 切分方式
+    top_k: int, top_k
+    top_p: float, top_p
+    temperature: float, 温度
+    ref_free: bool, 是否使用参考音频
+    speed: float, 速度
+    if_freeze: bool, 是否冻结
+    inp_refs: list, 输入参考音频
+    sample_steps: int, 采样步数
+    if_sr: bool, 是否超分
+    pause_second: float, 间隔时间
+    '''
+
+    print("get_tts_wav", ref_wav_path, prompt_text, prompt_language, text, text_language, how_to_cut, top_k, top_p, 
+          temperature, ref_free, speed, if_freeze, inp_refs, sample_steps, if_sr, pause_second)
+
     global cache
     if ref_wav_path:pass
     else:gr.Warning(i18n('请上传参考音频'))

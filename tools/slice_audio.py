@@ -1,3 +1,7 @@
+'''
+语音切分
+'''
+
 import os,sys,numpy as np
 import traceback
 from scipy.io import wavfile
@@ -7,6 +11,7 @@ from tools.my_utils import load_audio
 from slicer2 import Slicer
 
 def slice(inp,opt_root,threshold,min_length,min_interval,hop_size,max_sil_kept,_max,alpha,i_part,all_part):
+    print('---> slice', inp,opt_root,threshold,min_length,min_interval,hop_size,max_sil_kept,_max,alpha,i_part,all_part)
     os.makedirs(opt_root,exist_ok=True)
     if os.path.isfile(inp):
         input=[inp]

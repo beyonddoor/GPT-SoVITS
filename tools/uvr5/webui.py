@@ -1,8 +1,12 @@
 import os
+import hook_proc
+
 import traceback,gradio as gr
 import logging
 from tools.i18n.i18n import I18nAuto
 from tools.my_utils import clean_path
+
+# 语言自动
 i18n = I18nAuto()
 
 logger = logging.getLogger(__name__)
@@ -40,7 +44,19 @@ def html_center(text, label='p'):
                 <{label} style="margin: 0; padding: 0;">{text}</{label}>
                 </div>"""
 
+# 提取主人声音
 def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0):
+    '''
+    model_name: str, 模型名。tools/uvr5/uvr5_weights下的模型名
+    inp_root: str, 输入文件夹路径
+    save_root_vocal: str, 输出主人声文件夹路径
+    paths: list, 输入文件路径
+    save_root_ins: str, 输出非主人声文件夹路径
+    agg: str, 人声提取激进程度
+    format0: str, 导出文件格式
+    '''
+    print('---> uvr',model_name,inp_root,save_root_vocal,paths,save_root_ins,agg,format0)
+
     infos = []
     try:
         inp_root = clean_path(inp_root)
