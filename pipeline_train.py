@@ -234,6 +234,7 @@ def wait_proc(p):
 ################################################################
 
 vocal_dir = "output/uvr5_opt"
+instrument_dir = "output/uvr5_ins"
 slicer_dir = "output/slicer_opt"
 denoise_dir = "output/denoise_opt"
 asr_dir = "output/asr_opt"
@@ -264,7 +265,7 @@ uvr_ex(
     inp_root=input_audio_dir, 
     save_root_vocal=vocal_dir,
     paths=[], 
-    save_root_ins=vocal_dir,
+    save_root_ins=instrument_dir,
     agg=10,
     format0="m4a",
     device_='cuda',
@@ -295,29 +296,29 @@ print(f'start asr to {asr_dir}')
 p = Popen(f'"python" tools/asr/funasr_asr.py -i "{denoise_dir}" -o "{asr_dir}" -s large -l zh -p float32', shell=True)
 wait_proc(p)
 
-'''
-                config={
-                    "inp_text":inp_text,
-                    "inp_wav_dir":inp_wav_dir,
-                    "exp_name":exp_name,
-                    "opt_dir":opt_dir,
-                    "bert_pretrained_dir":bert_pretrained_dir,
-                    "is_half": str(is_half)
-                }
-                gpu_names=gpu_numbers1a.split("-")
-                all_parts=len(gpu_names)
-                for i_part in range(all_parts):
-                    config.update(
-                        {
-                            "i_part": str(i_part),
-                            "all_parts": str(all_parts),
-                            "_CUDA_VISIBLE_DEVICES": fix_gpu_number(gpu_names[i_part]),
-                        }
-                    )
-                    os.environ.update(config)
-'''
-
 print(os.getcwd())
+
+'''
+config={
+    "inp_text":inp_text,
+    "inp_wav_dir":inp_wav_dir,
+    "exp_name":exp_name,
+    "opt_dir":opt_dir,
+    "bert_pretrained_dir":bert_pretrained_dir,
+    "is_half": str(is_half)
+}
+gpu_names=gpu_numbers1a.split("-")
+all_parts=len(gpu_names)
+for i_part in range(all_parts):
+    config.update(
+        {
+            "i_part": str(i_part),
+            "all_parts": str(all_parts),
+            "_CUDA_VISIBLE_DEVICES": fix_gpu_number(gpu_names[i_part]),
+        }
+    )
+    os.environ.update(config)
+'''
 
 p = Popen('python GPT_SoVITS/prepare_datasets/1-get-text.py')
 wait_proc(p)

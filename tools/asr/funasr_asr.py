@@ -40,6 +40,8 @@ def create_model(language="zh"):
         ###友情提示：粤语带VAD识别可能会有少量shape不对报错的，但是不带VAD可以.不带vad只能分阶段单独加标点。不过标点模型对粤语效果真的不行…
     else:
         raise ValueError("FunASR 不支持该语言" + ": " + language)
+    
+    print(f'models = {funasr_models}')
 
     if language in funasr_models:
         return funasr_models[language]
@@ -70,6 +72,7 @@ def execute_asr(input_folder, output_folder, model_size, language):
         try:
             print("\n" + file_name)
             file_path = os.path.join(input_folder, file_name)
+            print(f'file_path: {file_path}')
             text = model.generate(input=file_path)[0]["text"]
             output.append(f"{file_path}|{output_file_name}|{language.upper()}|{text}")
         except:
