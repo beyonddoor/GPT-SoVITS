@@ -29,10 +29,18 @@ for name in os.listdir(weight_uvr5_root):
     if name.endswith(".pth") or name.endswith(".ckpt") or "onnx" in name:
         uvr5_names.append(name.replace(".pth", "").replace(".ckpt", ""))
 
-device=sys.argv[1]
-is_half=eval(sys.argv[2])
-webui_port_uvr5=int(sys.argv[3])
-is_share=eval(sys.argv[4])
+device=None
+is_half=None
+
+# 如下与webui有关
+webui_port_uvr5=None
+is_share=None
+
+if __name__ == "__main__":
+    device=sys.argv[1]
+    is_half=eval(sys.argv[2])
+    webui_port_uvr5=int(sys.argv[3])
+    is_share=eval(sys.argv[4])
 
 def html_left(text, label='p'):
     return f"""<div style="text-align: left; margin: 0; padding: 0;">
@@ -43,6 +51,12 @@ def html_center(text, label='p'):
     return f"""<div style="text-align: center; margin: 100; padding: 50;">
                 <{label} style="margin: 0; padding: 0;">{text}</{label}>
                 </div>"""
+
+def uvr_ex(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0, device_, is_half_):
+    global device,is_half
+    device=device_
+    is_half=is_half_
+    return uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0)
 
 # 提取主人声音
 def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0):
@@ -63,6 +77,8 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
         save_root_vocal = clean_path(save_root_vocal)
         save_root_ins = clean_path(save_root_ins)
         is_hp3 = "HP3" in model_name
+
+        # 三种模型的处理
         if model_name == "onnx_dereverb_By_FoxJoy":
             pre_fun = MDXNetDereverb(15)
         elif "roformer" in model_name.lower():
@@ -84,10 +100,14 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
                 device=device,
                 is_half=is_half,
             )
+
         if inp_root != "":
             paths = [os.path.join(inp_root, name) for name in os.listdir(inp_root)]
         else:
+            # 上传的文件列表
             paths = [path.name for path in paths]
+
+
         for path in paths:
             inp_path = os.path.join(inp_root, path)
             if(os.path.isfile(inp_path)==False):continue
@@ -107,6 +127,9 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
             except:
                 need_reformat = 1
                 traceback.print_exc()
+
+            
+            # 处理音频格式
             if need_reformat == 1:
                 tmp_path = "%s/%s.reformatted.wav" % (
                     os.path.join(os.environ["TEMP"]),
@@ -117,6 +140,7 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
                 )
                 inp_path = tmp_path
             try:
+                # 转换后再处理一下
                 if done == 0:
                     pre_fun._path_audio_(
                         inp_path, save_root_ins, save_root_vocal, format0,is_hp3
@@ -141,6 +165,7 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
                 del pre_fun
         except:
             traceback.print_exc()
+
         print("clean_empty_cache")
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
@@ -175,6 +200,8 @@ with gr.Blocks(title="UVR5 WebUI") as app:
                             label=i18n("输入待处理音频文件夹路径"),
                             placeholder="C:\\Users\\Desktop\\todo-songs",
                         )
+
+                        # 通过文件上传的audio
                         wav_inputs = gr.File(
                             file_count="multiple", label=i18n("也可批量输入音频文件, 二选一, 优先读文件夹")
                         )
@@ -219,10 +246,12 @@ with gr.Blocks(title="UVR5 WebUI") as app:
                         [vc_output4],
                         api_name="uvr_convert",
                     )
-app.queue().launch(#concurrency_count=511, max_size=1022
+
+if __name__ == "__main__":
+    app.queue().launch(#concurrency_count=511, max_size=1022
     server_name="0.0.0.0",
     inbrowser=True,
     share=is_share,
     server_port=webui_port_uvr5,
     quiet=True,
-)
+    )

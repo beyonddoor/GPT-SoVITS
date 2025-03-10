@@ -96,6 +96,8 @@ if torch.cuda.is_available() or ngpu != 0:
             gpu_infos.append("%s\t%s" % (i, gpu_name))
             set_gpu_numbers.add(i)
             mem.append(int(torch.cuda.get_device_properties(i).total_memory/ 1024/ 1024/ 1024+ 0.4))
+
+            
 # # 判断是否支持mps加速
 # if torch.backends.mps.is_available():
 #     if_gpu_ok = True

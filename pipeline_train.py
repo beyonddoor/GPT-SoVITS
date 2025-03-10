@@ -1,6 +1,6 @@
 
 import hook_proc
-from tools.uvr5.webui import uvr
+from tools.uvr5.webui import uvr_ex
 import os
 from subprocess import Popen
 
@@ -16,14 +16,16 @@ input_audio_dir = "data/input_audio"  #放到这个目录
 
 ################################################################
 
-uvr(
+uvr_ex(
     model_name="HP2_all_vocals",  #fixme: change it
     inp_root=input_audio_dir, 
     save_root_vocal=vocal_dir,
     paths=[], 
     save_root_ins=vocal_dir,
     agg=10,
-    format0="m4a"
+    format0="m4a",
+    device_='cuda',
+    is_half_=True,
 )
 # 输出到save_root_vocal和save_root_ins
 
