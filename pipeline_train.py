@@ -22,7 +22,19 @@ if not os.path.exists(input_audio_dir):
 if not os.listdir(input_audio_dir):
     raise FileNotFoundError("input_audio_dir contains files")
 
-for v in uvr_ex(
+# for v in uvr_ex(
+#     model_name="HP2_all_vocals",  #fixme: change it
+#     inp_root=input_audio_dir, 
+#     save_root_vocal=vocal_dir,
+#     paths=[], 
+#     save_root_ins=vocal_dir,
+#     agg=10,
+#     format0="m4a",
+#     device_='cuda',
+#     is_half_=True,
+# ):
+#     print(v)
+uvr_ex(
     model_name="HP2_all_vocals",  #fixme: change it
     inp_root=input_audio_dir, 
     save_root_vocal=vocal_dir,
@@ -32,8 +44,7 @@ for v in uvr_ex(
     format0="m4a",
     device_='cuda',
     is_half_=True,
-):
-    print(v)
+)
 # 输出到save_root_vocal和save_root_ins
 
 # os.system('python tools/cmd-denoise.py -i "output/slicer_opt" -o "output/uvr5_opt"')
