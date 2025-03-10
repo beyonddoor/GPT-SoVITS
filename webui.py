@@ -426,7 +426,11 @@ def open1Ba(batch_size,total_epoch,exp_name,text_low_lr_rate,if_save_latest,
         data["name"]=exp_name
         data["version"]=version
         tmp_config_path="%s/tmp_s2.json"%tmp
-        with open(tmp_config_path,"w")as f:f.write(json.dumps(data))
+        with open(tmp_config_path,"w")as f:
+            data_str = json.dumps(data)
+            f.write(data_str)
+            print('==> tmp_s2.json', tmp_config_path, data_str)
+
         if version in ["v1","v2"]:
             cmd = '"%s" GPT_SoVITS/s2_train.py --config "%s"'%(python_exec,tmp_config_path)
         else:
@@ -481,7 +485,11 @@ def open1Bb(batch_size,total_epoch,exp_name,if_dpo,if_save_latest,if_save_every_
         os.environ["_CUDA_VISIBLE_DEVICES"]=fix_gpu_numbers(gpu_numbers.replace("-",","))
         os.environ["hz"]="25hz"
         tmp_config_path="%s/tmp_s1.yaml"%tmp
-        with open(tmp_config_path, "w") as f:f.write(yaml.dump(data, default_flow_style=False))
+        with open(tmp_config_path, "w") as f:
+            yaml_str = yaml.dump(data, default_flow_style=False)
+            f.write(yaml_str)
+            print('==> tmp_s1.yaml', tmp_config_path, yaml_str)
+            
         # cmd = '"%s" GPT_SoVITS/s1_train.py --config_file "%s" --train_semantic_path "%s/6-name2semantic.tsv" --train_phoneme_path "%s/2-name2text.txt" --output_dir "%s/logs_s1"'%(python_exec,tmp_config_path,s1_dir,s1_dir,s1_dir)
         cmd = '"%s" GPT_SoVITS/s1_train.py --config_file "%s" '%(python_exec,tmp_config_path)
         yield process_info(process_name_gpt, "opened"), {"__type__": "update", "visible": False}, {"__type__": "update", "visible": True}
