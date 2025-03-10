@@ -320,17 +320,17 @@ for i_part in range(all_parts):
     os.environ.update(config)
 '''
 
-p = Popen('python GPT_SoVITS/prepare_datasets/1-get-text.py')
+p = Popen('python GPT_SoVITS/prepare_datasets/1-get-text.py', shell=True)
 wait_proc(p)
 
-p = Popen('python GPT_SoVITS/prepare_datasets/2-get-hubert-wav32k.py')
+p = Popen('python GPT_SoVITS/prepare_datasets/2-get-hubert-wav32k.py', shell=True)
 wait_proc(p)
 
-p = Popen('python GPT_SoVITS/prepare_datasets/3-get-semantic.py')
+p = Popen('python GPT_SoVITS/prepare_datasets/3-get-semantic.py', shell=True)
 wait_proc(p)
 
-p = Popen('python GPT_SoVITS/s2_train.py --config "/content/GPT-SoVITS/TEMP/tmp_s2.json"')
+p = Popen('python GPT_SoVITS/s2_train.py --config "/content/GPT-SoVITS/TEMP/tmp_s2.json"', shell=True)
 wait_proc(p)
 
-p = Popen('python GPT_SoVITS/s1_train.py --config_file "/content/GPT-SoVITS/TEMP/tmp_s1.yaml"')
+p = Popen('python GPT_SoVITS/s1_train.py --config_file "/content/GPT-SoVITS/TEMP/tmp_s1.yaml"', shell=True)
 wait_proc(p)
