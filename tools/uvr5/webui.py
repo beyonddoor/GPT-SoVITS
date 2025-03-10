@@ -165,7 +165,10 @@ def uvr_ex(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, for
     global device,is_half
     device=device_
     is_half=is_half_
-    return uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0)
+    print('start to uvr')
+    res = uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0)
+    print(f'uvr_ex done', res)
+    return res
 
 if __name__ == "__main__":
 
