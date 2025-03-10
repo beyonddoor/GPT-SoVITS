@@ -226,6 +226,11 @@ from subprocess import Popen
 
 from GPT_SoVITS.inference_webui import get_tts_wav
 
+def wait_proc(p):
+    if p:
+        print(f'wait proc {p}')
+        p.wait()
+
 ################################################################
 
 vocal_dir = "output/uvr5_opt"
@@ -272,23 +277,23 @@ uvr_ex(
 
 print(f'start slice to {slicer_dir}')
 p = Popen(f'python tools/slice_audio.py {vocal_dir} "{slicer_dir}" -34 4000 300 10 500 0.9 0.25 0 4', shell=True)
-print(p)
+wait_proc(p)
 p = Popen(f'python tools/slice_audio.py {vocal_dir} "{slicer_dir}" -34 4000 300 10 500 0.9 0.25 1 4', shell=True)
-print(p)
+wait_proc(p)
 p = Popen(f'python tools/slice_audio.py {vocal_dir} "{slicer_dir}" -34 4000 300 10 500 0.9 0.25 2 4', shell=True)
-print(p)
+wait_proc(p)
 p = Popen(f'python tools/slice_audio.py {vocal_dir} "{slicer_dir}" -34 4000 300 10 500 0.9 0.25 3 4', shell=True)
-print(p)
+wait_proc(p)
 
 
 print(f'start denoise to {denoise_dir}')
 p = Popen(f'"python" tools/cmd-denoise.py -i "{slicer_dir}" -o "{denoise_dir}" -p float16', shell=True)
-print(p)
+wait_proc(p)
 
 
 print(f'start asr to {asr_dir}')
 p = Popen(f'"python" tools/asr/funasr_asr.py -i "{denoise_dir}" -o "{asr_dir}" -s large -l zh -p float32', shell=True)
-print(p)
+wait_proc(p)
 
 '''
                 config={
@@ -313,16 +318,16 @@ print(p)
 '''
 
 p = Popen('python GPT_SoVITS/prepare_datasets/1-get-text.py')
-print(p)
+wait_proc(p)
 
 p = Popen('python GPT_SoVITS/prepare_datasets/2-get-hubert-wav32k.py')
-print(p)
+wait_proc(p)
 
 p = Popen('python GPT_SoVITS/prepare_datasets/3-get-semantic.py')
-print(p)
+wait_proc(p)
 
 p = Popen('python GPT_SoVITS/s2_train.py --config "/content/GPT-SoVITS/TEMP/tmp_s2.json"')
-print(p)
+wait_proc(p)
 
 p = Popen('python GPT_SoVITS/s1_train.py --config_file "/content/GPT-SoVITS/TEMP/tmp_s1.yaml"')
-print(p)
+wait_proc(p)
