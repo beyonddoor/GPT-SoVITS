@@ -104,9 +104,11 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
             # 上传的文件列表
             paths = [path.name for path in paths]
 
+        print(f'uvr paths={paths}')
 
         for path in paths:
             inp_path = os.path.join(inp_root, path)
+            print(f'uvr processing inp_path={inp_path}')
             if(os.path.isfile(inp_path)==False):continue
             need_reformat = 1
             done = 0
