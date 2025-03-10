@@ -55,13 +55,6 @@ def html_center(text, label='p'):
                 <{label} style="margin: 0; padding: 0;">{text}</{label}>
                 </div>"""
 
-def uvr_ex(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0, device_, is_half_):
-    print(f'uvr_ex {model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0, device_, is_half_}')
-    global device,is_half
-    device=device_
-    is_half=is_half_
-    return uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0)
-
 # 提取主人声音
 def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0):
     '''
@@ -73,7 +66,7 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
     agg: str, 人声提取激进程度
     format0: str, 导出文件格式
     '''
-    print('---> uvr',model_name,inp_root,save_root_vocal,paths,save_root_ins,agg,format0)
+    print(f'uvr {model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0}')
 
     infos = []
     try:
@@ -175,6 +168,12 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
             torch.cuda.empty_cache()
     yield "\n".join(infos)
 
+def uvr_ex(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0, device_, is_half_):
+    print(f'uvr_ex {model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0, device_, is_half_}')
+    global device,is_half
+    device=device_
+    is_half=is_half_
+    return uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0)
 
 if __name__ == "__main__":
 
