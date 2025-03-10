@@ -1,3 +1,5 @@
+print(f'--> webui')
+
 import os
 import hook_proc
 
@@ -29,6 +31,7 @@ for name in os.listdir(weight_uvr5_root):
     if name.endswith(".pth") or name.endswith(".ckpt") or "onnx" in name:
         uvr5_names.append(name.replace(".pth", "").replace(".ckpt", ""))
 
+print(f'uvr5_names={uvr5_names}')
 device=None
 is_half=None
 

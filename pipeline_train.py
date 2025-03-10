@@ -16,6 +16,12 @@ input_audio_dir = "data/input_audio"  #放到这个目录
 
 ################################################################
 
+if not os.path.exists(input_audio_dir):
+    raise FileNotFoundError(f"input_audio_dir not found: {input_audio_dir}")
+
+if not os.listdir(input_audio_dir):
+    raise FileNotFoundError("input_audio_dir contains files")
+
 uvr_ex(
     model_name="HP2_all_vocals",  #fixme: change it
     inp_root=input_audio_dir, 
