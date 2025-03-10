@@ -317,6 +317,8 @@ wait_proc(p)
                     os.environ.update(config)
 '''
 
+print(os.getcwd())
+
 p = Popen('python GPT_SoVITS/prepare_datasets/1-get-text.py')
 wait_proc(p)
 
