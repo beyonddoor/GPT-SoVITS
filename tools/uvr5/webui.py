@@ -119,6 +119,8 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
                     and info["streams"][0]["sample_rate"] == "44100"
                 ):
                     need_reformat = 0
+                    print(f"No need to reformat {inp_path}")
+                    print(f"==> Start to process {inp_path}")
                     pre_fun._path_audio_(
                         inp_path, save_root_ins, save_root_vocal, format0,is_hp3
                     )
@@ -141,6 +143,7 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
             try:
                 # 转换后再处理一下
                 if done == 0:
+                    print(f"==> Start to process {inp_path}")
                     pre_fun._path_audio_(
                         inp_path, save_root_ins, save_root_vocal, format0,is_hp3
                     )
