@@ -56,6 +56,7 @@ def html_center(text, label='p'):
                 </div>"""
 
 def uvr_ex(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0, device_, is_half_):
+    print(f'uvr_ex {model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0, device_, is_half_}')
     global device,is_half
     device=device_
     is_half=is_half_
@@ -177,6 +178,8 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
 
 if __name__ == "__main__":
 
+    print(f'uvr5 webui start')
+
     with gr.Blocks(title="UVR5 WebUI") as app:
         gr.Markdown(
             value=
@@ -260,3 +263,6 @@ if __name__ == "__main__":
         server_port=webui_port_uvr5,
         quiet=True,
     )
+
+
+print(f'webui import done')
