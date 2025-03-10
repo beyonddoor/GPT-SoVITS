@@ -332,12 +332,40 @@ print(os.getcwd())
 # p = Popen('python GPT_SoVITS/prepare_datasets/3-get-semantic.py', shell=True)
 # wait_proc(p)
 
-webui.open1abc(
-    
-)
+for msg in webui.open1abc(
+    'output/asr_opt/denoise_opt.list', 
+    'output/denoise_opt',
+    'GPT-SoVITS',
+    '0-0',
+    '0-0',
+    '0-0',
+    'GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large',
+    'GPT_SoVITS/pretrained_models/chinese-hubert-base',
+    'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth'
+):
+    print(msg)
 
-p = Popen('python GPT_SoVITS/s2_train.py --config "/content/GPT-SoVITS/TEMP/tmp_s2.json"', shell=True)
-wait_proc(p)
+# p = Popen('python GPT_SoVITS/s2_train.py --config "/content/GPT-SoVITS/TEMP/tmp_s2.json"', shell=True)
+# wait_proc(p)
 
-p = Popen('python GPT_SoVITS/s1_train.py --config_file "/content/GPT-SoVITS/TEMP/tmp_s1.yaml"', shell=True)
-wait_proc(p)
+for msg in webui.open1Ba(
+    7,8,'GPT-SoVITS',
+    0.4, True, True,
+    4, 0, 
+    'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth',
+    'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2D2333k.pth',
+    False,
+    32
+):
+    print(msg)
+
+# p = Popen('python GPT_SoVITS/s1_train.py --config_file "/content/GPT-SoVITS/TEMP/tmp_s1.yaml"', shell=True)
+# wait_proc(p)
+
+for msg in webui.open1Bb(
+    7, 15, 'GPT-SoVITS', 
+    False,True, True, 5,0, 
+    'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-step=369668.ckpt'
+):
+    print(msg)
+

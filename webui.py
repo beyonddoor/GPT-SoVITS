@@ -402,6 +402,7 @@ def open1Ba(batch_size,total_epoch,exp_name,text_low_lr_rate,if_save_latest,
         with open("GPT_SoVITS/configs/s2.json")as f:
             data=f.read()
             data=json.loads(data)
+
         s2_dir="%s/%s"%(exp_root,exp_name)
         os.makedirs("%s/logs_s2_%s"%(s2_dir,version),exist_ok=True)
         if check_for_existance([s2_dir],is_train=True):
@@ -489,7 +490,7 @@ def open1Bb(batch_size,total_epoch,exp_name,if_dpo,if_save_latest,if_save_every_
             yaml_str = yaml.dump(data, default_flow_style=False)
             f.write(yaml_str)
             print('==> tmp_s1.yaml', tmp_config_path, yaml_str)
-            
+
         # cmd = '"%s" GPT_SoVITS/s1_train.py --config_file "%s" --train_semantic_path "%s/6-name2semantic.tsv" --train_phoneme_path "%s/2-name2text.txt" --output_dir "%s/logs_s1"'%(python_exec,tmp_config_path,s1_dir,s1_dir,s1_dir)
         cmd = '"%s" GPT_SoVITS/s1_train.py --config_file "%s" '%(python_exec,tmp_config_path)
         yield process_info(process_name_gpt, "opened"), {"__type__": "update", "visible": False}, {"__type__": "update", "visible": True}
@@ -726,7 +727,10 @@ def close1c():
 ps1abc=[]
 process_name_1abc = i18n("训练集格式化一键三连")
 def open1abc(inp_text,inp_wav_dir,exp_name,gpu_numbers1a,gpu_numbers1Ba,gpu_numbers1c,bert_pretrained_dir,ssl_pretrained_dir,pretrained_s2G_path):
-    '''一键三连'''
+    '''一键三连
+    inp_text: 文本标注文件路径
+
+    '''
     print("==> open1abc",inp_text,inp_wav_dir,exp_name,gpu_numbers1a,gpu_numbers1Ba,gpu_numbers1c,bert_pretrained_dir,ssl_pretrained_dir,pretrained_s2G_path)
 
     global ps1abc
