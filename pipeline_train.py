@@ -12,14 +12,15 @@ vocal_dir = "output/uvr5_opt"
 slicer_dir = "output/slicer_opt"
 denoise_dir = "output/denoise_opt"
 asr_dir = "output/asr_opt"
+input_audio_dir = "data/input_audio"  #放到这个目录
 
 ################################################################
 
 uvr(
     model_name="HP2_all_vocals",  #fixme: change it
-    inp_root="",
+    inp_root=input_audio_dir, 
     save_root_vocal=vocal_dir,
-    paths=["tools/uvr5/test_data/1.wav"],       # fixme: change to the path of the input file
+    paths=[], 
     save_root_ins=vocal_dir,
     agg=10,
     format0="m4a"
