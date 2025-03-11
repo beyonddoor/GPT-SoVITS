@@ -351,7 +351,7 @@ for msg in webui.open1abc(
 for msg in webui.open1Ba(
     7,8,'GPT-SoVITS',
     0.4, True, True,
-    4, 0, 
+    4, '0-0', 
     'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth',
     'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2D2333k.pth',
     False,

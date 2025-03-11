@@ -555,6 +555,7 @@ def close_slice():
 ps1a=[]
 process_name_1a = i18n("文本分词与特征提取")
 def open1a(inp_text,inp_wav_dir,exp_name,gpu_numbers,bert_pretrained_dir):
+    log_debug("===> open1a", inp_text, inp_wav_dir, exp_name, gpu_numbers, bert_pretrained_dir)
     global ps1a
     inp_text = my_utils.clean_path(inp_text)
     inp_wav_dir = my_utils.clean_path(inp_wav_dir)
@@ -619,6 +620,7 @@ def close1a():
 ps1b=[]
 process_name_1b = i18n("语音自监督特征提取")
 def open1b(inp_text,inp_wav_dir,exp_name,gpu_numbers,ssl_pretrained_dir):
+    log_debug("===> open1b", inp_text, inp_wav_dir, exp_name, gpu_numbers, ssl_pretrained_dir)
     global ps1b
     inp_text = my_utils.clean_path(inp_text)
     inp_wav_dir = my_utils.clean_path(inp_wav_dir)
@@ -670,6 +672,7 @@ def close1b():
 ps1c=[]
 process_name_1c = i18n("语义Token提取")
 def open1c(inp_text,exp_name,gpu_numbers,pretrained_s2G_path):
+    log_debug("===> open1c", inp_text, exp_name, gpu_numbers, pretrained_s2G_path)
     global ps1c
     inp_text = my_utils.clean_path(inp_text)
     if check_for_existance([inp_text,''], is_dataset_processing=True):
