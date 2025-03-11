@@ -323,7 +323,8 @@ def uvr_ex(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, for
     device=device_
     is_half=is_half_
     print('start to uvr')
-    res = uvr_new(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0)
+    for res in uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0):
+        print('==>', res)
     print(f'uvr_ex done', res)
     return res
 

@@ -1,3 +1,5 @@
+p -m pip install fastapi uvicorn celery redis
+
 celery -A worker.celery_app worker --loglevel=info
 uvicorn main:app --reload
 redis-server

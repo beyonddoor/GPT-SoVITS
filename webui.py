@@ -927,7 +927,7 @@ if __name__ == '__main__':
                 with gr.Row():
                     with gr.Column(scale=3):
                         with gr.Row():
-                            slice_inp_path=gr.Textbox(label=i18n("音频自动切分输入路径，可文件可文件夹"),value="")
+                            slice_inp_path=gr.Textbox(label=i18n("音频自动切分输入路径，可文件可文件夹"),value="output/uvr5_opt")
                             slice_opt_root=gr.Textbox(label=i18n("切分后的子音频的输出根目录"),value="output/slicer_opt")
                         with gr.Row():
                             threshold=gr.Textbox(label=i18n("threshold:音量小于这个值视作静音的备选切割点"),value="-34")
@@ -1007,7 +1007,7 @@ if __name__ == '__main__':
             with gr.TabItem(i18n("1-GPT-SoVITS-TTS")):
                 with gr.Row():
                     with gr.Row():
-                        exp_name = gr.Textbox(label=i18n("*实验/模型名"), value="xxx", interactive=True)
+                        exp_name = gr.Textbox(label=i18n("*实验/模型名"), value="GPT-SoVITS", interactive=True)
                         gpu_info = gr.Textbox(label=i18n("显卡信息"), value=gpu_info, visible=True, interactive=False)
                         version_checkbox = gr.Radio(label=i18n("版本"),value=version,choices=['v1','v2','v3'])
                     with gr.Row():
