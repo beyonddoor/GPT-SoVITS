@@ -235,8 +235,12 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
         if inp_root != "":
             paths = [os.path.join(inp_root, name) for name in os.listdir(inp_root)]
         else:
-            # 上传的文件列表
-            paths = [path.name for path in paths]
+            # 上传的文件列表            
+            def real_path(path):
+                if hasattr(path, 'name'):
+                    return path.name
+                return path
+            paths = [real_path(path) for path in paths]
 
         print(f'uvr paths={paths}')
 
