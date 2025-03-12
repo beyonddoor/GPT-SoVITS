@@ -133,10 +133,12 @@ for msg in webui.open1abc(
 # p = Popen('python GPT_SoVITS/s2_train.py --config "/content/GPT-SoVITS/TEMP/tmp_s2.json"', shell=True)
 # wait_proc(p)
 
+gpus = '0-0'
+
 for msg in webui.open1Ba(
     7,8,'GPT-SoVITS',
     0.4, True, True,
-    4, '0-0', 
+    4, gpus, 
     'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth',
     'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2D2333k.pth',
     False,
@@ -149,7 +151,7 @@ for msg in webui.open1Ba(
 
 for msg in webui.open1Bb(
     7, 15, 'GPT-SoVITS', 
-    False,True, True, 5,0, 
+    False,True, True, 5, gpus, 
     'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-step=369668.ckpt'
 ):
     print(msg)
