@@ -16,6 +16,7 @@ import psutil
 import signal
 os.environ['TORCH_DISTRIBUTED_DEBUG'] = 'INFO'
 torch.manual_seed(233333)
+from tools import my_utils
 
 tmp = my_utils.get_tmp_dir(now_dir)
 os.makedirs(tmp, exist_ok=True)
@@ -52,7 +53,6 @@ for site_packages_root in site_packages_roots:
             break
         except PermissionError as e:
             traceback.print_exc()
-from tools import my_utils
 import shutil
 import pdb
 import subprocess
@@ -67,7 +67,7 @@ from subprocess import Popen
 
 
 import signal
-from config import python_exec,infer_device,is_half,exp_root,webui_port_main,webui_port_infer_tts,webui_port_uvr5,webui_port_subfix,is_share
+from config import python_exec,infer_device,is_half,exp_root,webui_port_main,webui_port_infer_tts,webui_port_uvr5,webui_port_subfix,is_share, get_output_dir
 from tools.i18n.i18n import I18nAuto, scan_language_list
 language=sys.argv[-1] if sys.argv[-1] in scan_language_list() else "Auto"
 os.environ["language"]=language
@@ -423,7 +423,7 @@ def open1Ba(batch_size,total_epoch,exp_name,text_low_lr_rate,if_save_latest,
             data=json.loads(data)
 
         # s2_dir="%s/%s"%(exp_root,exp_name)
-        s2_dir = my_utils.get_output_dir(exp_name)
+        s2_dir = get_output_dir(exp_name)
         os.makedirs("%s/logs_s2_%s"%(s2_dir,version),exist_ok=True)
         if check_for_existance([s2_dir],is_train=True):
             check_details([s2_dir],is_train=True)
@@ -483,7 +483,7 @@ def open1Bb(batch_size,total_epoch,exp_name,if_dpo,if_save_latest,if_save_every_
             data=f.read()
             data=yaml.load(data, Loader=yaml.FullLoader)
         # s1_dir="%s/%s"%(exp_root,exp_name)
-        s1_dir = my_utils.get_output_dir(exp_name)
+        s1_dir = get_output_dir(exp_name)
         os.makedirs("%s/logs_s1"%(s1_dir),exist_ok=True)
         if check_for_existance([s1_dir],is_train=True):
             check_details([s1_dir],is_train=True)
@@ -580,7 +580,7 @@ def open1a(inp_text,inp_wav_dir,exp_name,gpu_numbers,bert_pretrained_dir):
     if check_for_existance([inp_text,inp_wav_dir], is_dataset_processing=True):
         check_details([inp_text,inp_wav_dir], is_dataset_processing=True)
     if (ps1a == []):
-        opt_dir = my_utils.get_output_dir(exp_name)
+        opt_dir = get_output_dir(exp_name)
         # opt_dir="%s/%s"%(exp_root,exp_name)
         config={
             "inp_text":inp_text,
@@ -643,7 +643,7 @@ def open1b(inp_text,inp_wav_dir,exp_name,gpu_numbers,ssl_pretrained_dir):
     global ps1b
     inp_text = my_utils.clean_path(inp_text)
     inp_wav_dir = my_utils.clean_path(inp_wav_dir)
-    opt_dir = my_utils.get_output_dir(exp_name)
+    opt_dir = get_output_dir(exp_name)
     if check_for_existance([inp_text,inp_wav_dir], is_dataset_processing=True):
         check_details([inp_text,inp_wav_dir], is_dataset_processing=True)
     if (ps1b == []):
@@ -699,7 +699,7 @@ def open1c(inp_text,exp_name,gpu_numbers,pretrained_s2G_path):
         check_details([inp_text,''], is_dataset_processing=True)
     if (ps1c == []):
         # opt_dir="%s/%s"%(exp_root,exp_name)
-        opt_dir = my_utils.get_output_dir(exp_name)
+        opt_dir = get_output_dir(exp_name)
         config={
             "inp_text":inp_text,
             "exp_name":exp_name,
@@ -767,7 +767,7 @@ def open1abc(inp_text,inp_wav_dir,exp_name,gpu_numbers1a,gpu_numbers1Ba,gpu_numb
         check_details([inp_text,inp_wav_dir], is_dataset_processing=True)
     if (ps1abc == []):
         # opt_dir="%s/%s"%(exp_root,exp_name)
-        opt_dir = my_utils.get_output_dir(exp_name)
+        opt_dir = get_output_dir(exp_name)
         try:
             #############################1a
             path_text="%s/2-name2text.txt" % opt_dir

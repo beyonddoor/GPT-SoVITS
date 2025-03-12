@@ -64,3 +64,15 @@ class Config:
         self.webui_port_subfix = webui_port_subfix
 
         self.api_port = api_port
+
+from icecream import ic
+def get_output_dir(model_name):
+    '''输出权重的dir'''
+    user_id = os.environ.get("SOVITS_USER_ID", None)
+    if user_id:
+        opt_dir = "%s/%s/%s" % (exp_root, model_name, user_id)
+    else:
+        opt_dir="%s/%s" % (exp_root, model_name)
+
+    ic('get_output_dir', opt_dir)
+    return opt_dir

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+from icecream import ic
+import torch
 
 inp_text = os.environ.get("inp_text")
 inp_wav_dir = os.environ.get("inp_wav_dir")
@@ -11,9 +13,9 @@ if "_CUDA_VISIBLE_DEVICES" in os.environ:
      os.environ["CUDA_VISIBLE_DEVICES"] = os.environ["_CUDA_VISIBLE_DEVICES"]
 opt_dir = os.environ.get("opt_dir")
 bert_pretrained_dir = os.environ.get("bert_pretrained_dir")
-import torch
 is_half = eval(os.environ.get("is_half", "True")) and torch.cuda.is_available()
 version = os.environ.get('version', None)
+
 import sys, numpy as np, traceback, pdb
 import os.path
 from glob import glob
@@ -46,6 +48,8 @@ def my_save(fea,path):#####fix issue: torch.save doesn't support chinese path
 
 
 txt_path = "%s/2-name2text-%s.txt" % (opt_dir, i_part)
+ic(inp_text, inp_wav_dir, exp_name, i_part, all_parts, opt_dir, bert_pretrained_dir, is_half, txt_path)
+
 if os.path.exists(txt_path) == False:
     bert_dir = "%s/3-bert" % (opt_dir)
     os.makedirs(opt_dir, exist_ok=True)
@@ -56,8 +60,11 @@ if os.path.exists(txt_path) == False:
     #     device = "mps"
     else:
         device = "cpu"
+
     if os.path.exists(bert_pretrained_dir):...
     else:raise FileNotFoundError(bert_pretrained_dir)
+
+    ic(bert_pretrained_dir)
     tokenizer = AutoTokenizer.from_pretrained(bert_pretrained_dir)
     bert_model = AutoModelForMaskedLM.from_pretrained(bert_pretrained_dir)
     if is_half == True:
@@ -106,6 +113,7 @@ if os.path.exists(txt_path) == False:
 
     todo = []
     res = []
+    ic(inp_text)
     with open(inp_text, "r", encoding="utf8") as f:
         lines = f.read().strip("\n").split("\n")
 
@@ -145,3 +153,4 @@ if os.path.exists(txt_path) == False:
         opt.append("%s\t%s\t%s\t%s" % (name, phones, word2ph, norm_text))
     with open(txt_path, "w", encoding="utf8") as f:
         f.write("\n".join(opt) + "\n")
+    ic(txt_path)

@@ -1,4 +1,5 @@
 import os
+from icecream import ic
 
 inp_text = os.environ.get("inp_text")
 exp_name = os.environ.get("exp_name")
@@ -55,6 +56,8 @@ logging.getLogger("numba").setLevel(logging.WARNING)
 
 hubert_dir = "%s/4-cnhubert" % (opt_dir)
 semantic_path = "%s/6-name2semantic-%s.tsv" % (opt_dir, i_part)
+ic(inp_text, exp_name, i_part, all_parts, opt_dir, pretrained_s2G, s2config_path, is_half, hubert_dir, semantic_path)
+
 if os.path.exists(semantic_path) == False:
     os.makedirs(opt_dir, exist_ok=True)
 

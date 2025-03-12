@@ -2,13 +2,18 @@ from fastapi import FastAPI
 from celery.result import AsyncResult
 from worker import pipeline_train, pipeline_infer
 from celeryconfig import celery_app
+from pydantic import BaseModel
 
 app = FastAPI()
 
+class TrainRequest(BaseModel):
+    user_id: str
+
 @app.post("/train/")
-def train(user_id:str):
+def train(user_id:TrainRequest):
     task = pipeline_train.delay(user_id)
     return {"task_id": task.id, "status": "Task started"}
+
 
 @app.get("/train/{task_id}")
 def get_train_status(task_id: str):

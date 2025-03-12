@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import sys,os
+from icecream import ic
+
 inp_text=                           os.environ.get("inp_text")
 inp_wav_dir=                        os.environ.get("inp_wav_dir")
 exp_name=                           os.environ.get("exp_name")
@@ -8,6 +10,7 @@ i_part=                             os.environ.get("i_part")
 all_parts=                          os.environ.get("all_parts")
 if "_CUDA_VISIBLE_DEVICES" in os.environ:
      os.environ["CUDA_VISIBLE_DEVICES"] = os.environ["_CUDA_VISIBLE_DEVICES"]
+
 from feature_extractor import cnhubert
 opt_dir=                            os.environ.get("opt_dir")
 cnhubert.cnhubert_base_path=                os.environ.get("cnhubert_base_dir")
@@ -34,6 +37,7 @@ from tools.my_utils import load_audio,clean_path
 
 from time import time as ttime
 import shutil
+
 def my_save(fea,path):#####fix issue: torch.save doesn't support chinese path
     dir=os.path.dirname(path)
     name=os.path.basename(path)
@@ -44,6 +48,9 @@ def my_save(fea,path):#####fix issue: torch.save doesn't support chinese path
 
 hubert_dir="%s/4-cnhubert"%(opt_dir)
 wav32dir="%s/5-wav32k"%(opt_dir)
+
+ic(inp_text,inp_wav_dir,exp_name,i_part,all_parts,opt_dir,cnhubert.cnhubert_base_path,is_half, hubert_dir,wav32dir)
+
 os.makedirs(opt_dir,exist_ok=True)
 os.makedirs(hubert_dir,exist_ok=True)
 os.makedirs(wav32dir,exist_ok=True)
