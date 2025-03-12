@@ -3,10 +3,12 @@ import hook_proc
 import os
 from subprocess import Popen
 
+print('import tools.uvr5.webui')
 from tools.uvr5.webui import uvr_ex
 import webui
 from icecream import ic
 log_debug = ic
+
 
 def wait_proc(p):
     if p:
@@ -23,6 +25,8 @@ asr_dir = "output/asr_opt"
 input_audio_dir = "data/input_audio"  #放到这个目录
 
 ################################################################
+
+print('import finished')
 
 if not os.path.exists(input_audio_dir):
     raise FileNotFoundError(f"input_audio_dir not found: {input_audio_dir}")
@@ -42,6 +46,8 @@ if not os.listdir(input_audio_dir):
 #     is_half_=True,
 # ):
 #     print(v)
+
+print('start uvr')
 uvr_ex(
     model_name="HP2_all_vocals",  #fixme: change it
     inp_root='', 
@@ -133,10 +139,12 @@ for msg in webui.open1abc(
 # p = Popen('python GPT_SoVITS/s2_train.py --config "/content/GPT-SoVITS/TEMP/tmp_s2.json"', shell=True)
 # wait_proc(p)
 
+gpus = '0-0'
+
 for msg in webui.open1Ba(
     7,8,'GPT-SoVITS',
     0.4, True, True,
-    4, '0-0', 
+    4, gpus, 
     'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth',
     'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2D2333k.pth',
     False,
@@ -149,7 +157,7 @@ for msg in webui.open1Ba(
 
 for msg in webui.open1Bb(
     7, 15, 'GPT-SoVITS', 
-    False,True, True, 5,0, 
+    False,True, True, 5, gpus, 
     'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-step=369668.ckpt'
 ):
     print(msg)
