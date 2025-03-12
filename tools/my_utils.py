@@ -5,6 +5,7 @@ import gradio as gr
 from tools.i18n.i18n import I18nAuto
 import pandas as pd
 i18n = I18nAuto(language=os.environ.get('language','Auto'))
+from icecream import ic
 
 def load_audio(file, sr):
     try:
@@ -113,3 +114,24 @@ def check_details(path_list=None,is_train=False,is_dataset_processing=False):
         )
         if len(df) >= 1:...
         else:gr.Warning(i18n('缺少语义数据集'))
+
+
+def get_output_dir(model_name):
+    '''输出权重的dir'''
+    from ..config import exp_root
+
+    user_id = os.environ.get("SOVITS_USER_ID", None)
+    if user_id:
+        opt_dir = "%s/%s/%s" % (exp_root, model_name, user_id)
+    else:
+        opt_dir="%s/%s" % (exp_root, model_name)
+
+    ic('get_output_dir', opt_dir)
+    return opt_dir
+
+def get_tmp_dir(base_dir):
+    user_id = os.environ.get("SOVITS_USER_ID", None)
+    tmp = os.path.join(base_dir, "TEMP")
+    if user_id:
+        tmp = os.path.join(tmp, user_id)
+    return tmp

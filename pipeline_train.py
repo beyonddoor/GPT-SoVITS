@@ -2,6 +2,23 @@ import hook_proc
 
 import os
 from subprocess import Popen
+import argparse
+
+################################################################
+parser = argparse.ArgumentParser()
+parser.add_argument('-id', '--user_id', type=str, required=True)
+args = parser.parse_args()
+
+user_id = args.user_id
+input_audio_dir = f"data/{user_id}/input_audio"  #放到这个目录
+output_prefix = f'output/{user_id}'
+# output_prefix = args.output_prefix
+# input_audio_dir = args.input_audio_dir
+input_format = 'm4a'
+################################################################
+
+# 传递上下文，需要尽早执行
+os.environ['SOVITS_USER_ID'] = user_id
 
 print('import tools.uvr5.webui')
 from tools.uvr5.webui import uvr_ex
@@ -9,22 +26,18 @@ import webui
 from icecream import ic
 log_debug = ic
 
-
 def wait_proc(p):
     if p:
         print(f'wait proc {p}')
         p.wait()
 
-################################################################
+os.makedirs(output_prefix, exist_ok=True)
 
-vocal_dir = "output/uvr5_opt"
-instrument_dir = "output/uvr5_opt"
-slicer_dir = "output/slicer_opt"
-denoise_dir = "output/denoise_opt"
-asr_dir = "output/asr_opt"
-input_audio_dir = "data/input_audio"  #放到这个目录
-
-################################################################
+vocal_dir = f"{output_prefix}/uvr5_opt"
+instrument_dir = f"{output_prefix}/uvr5_opt"
+slicer_dir = f"{output_prefix}/slicer_opt"
+denoise_dir = f"{output_prefix}/denoise_opt"
+asr_dir = f"{output_prefix}/asr_opt"
 
 print('import finished')
 
@@ -52,10 +65,10 @@ uvr_ex(
     model_name="HP2_all_vocals",  #fixme: change it
     inp_root='', 
     save_root_vocal=vocal_dir,
-    paths=[f'{input_audio_dir}/1.m4a'], 
+    paths = [f'{input_audio_dir}/{name}' for name in os.listdir(input_audio_dir) if name.endswith(input_format)], 
     save_root_ins=instrument_dir,
     agg=10,
-    format0="m4a",
+    format0=input_format,
     device_='cuda',
     is_half_=True,
 )
@@ -123,13 +136,14 @@ print(os.getcwd())
 # p = Popen('python GPT_SoVITS/prepare_datasets/3-get-semantic.py', shell=True)
 # wait_proc(p)
 
+gpus = '0-0'
+
+print('start train SoVITS')
 for msg in webui.open1abc(
-    'output/asr_opt/denoise_opt.list', 
-    'output/denoise_opt',
+    f'{asr_dir}/denoise_opt.list', 
+    f'{denoise_dir}',
     'GPT-SoVITS',
-    '0-0',
-    '0-0',
-    '0-0',
+    gpus, gpus, gpus,
     'GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large',
     'GPT_SoVITS/pretrained_models/chinese-hubert-base',
     'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth'
@@ -139,8 +153,7 @@ for msg in webui.open1abc(
 # p = Popen('python GPT_SoVITS/s2_train.py --config "/content/GPT-SoVITS/TEMP/tmp_s2.json"', shell=True)
 # wait_proc(p)
 
-gpus = '0-0'
-
+print('start open1Ba')
 for msg in webui.open1Ba(
     7,8,'GPT-SoVITS',
     0.4, True, True,
@@ -155,6 +168,7 @@ for msg in webui.open1Ba(
 # p = Popen('python GPT_SoVITS/s1_train.py --config_file "/content/GPT-SoVITS/TEMP/tmp_s1.yaml"', shell=True)
 # wait_proc(p)
 
+print('start open1Bb')
 for msg in webui.open1Bb(
     7, 15, 'GPT-SoVITS', 
     False,True, True, 5, gpus, 
@@ -162,3 +176,5 @@ for msg in webui.open1Bb(
 ):
     print(msg)
 
+
+print('finish')

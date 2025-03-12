@@ -22,6 +22,7 @@ import os, re, sys, json
 import pdb
 import torch
 from text.LangSegmenter import LangSegmenter
+from icecream import ic
 
 try:
     import gradio.analytics as analytics
@@ -50,6 +51,8 @@ else:
 with open(f"./weight.json", 'r', encoding="utf-8") as file:
     weight_data = file.read()
     weight_data=json.loads(weight_data)
+
+    # 获取权重路径
     gpt_path = os.environ.get(
         "gpt_path", weight_data.get('GPT',{}).get(version,pretrained_gpt_name))
     sovits_path = os.environ.get(
@@ -532,7 +535,7 @@ def get_tts_wav(ref_wav_path, prompt_text, prompt_language, text, text_language,
     pause_second: float, 间隔时间
     '''
 
-    print("get_tts_wav", ref_wav_path, prompt_text, prompt_language, text, text_language, how_to_cut, top_k, top_p, 
+    ic("get_tts_wav", ref_wav_path, prompt_text, prompt_language, text, text_language, how_to_cut, top_k, top_p, 
           temperature, ref_free, speed, if_freeze, inp_refs, sample_steps, if_sr, pause_second)
 
     global cache
@@ -540,6 +543,7 @@ def get_tts_wav(ref_wav_path, prompt_text, prompt_language, text, text_language,
     else:gr.Warning(i18n('请上传参考音频'))
     if text:pass
     else:gr.Warning(i18n('请填入推理文本'))
+
     t = []
     if prompt_text is None or len(prompt_text) == 0:
         ref_free = True
@@ -564,6 +568,7 @@ def get_tts_wav(ref_wav_path, prompt_text, prompt_language, text, text_language,
         int(hps.data.sampling_rate * pause_second),
         dtype=np.float16 if is_half == True else np.float32,
     )
+
     zero_wav_torch = torch.from_numpy(zero_wav)
     if is_half == True:
         zero_wav_torch = zero_wav_torch.half().to(device)
@@ -721,6 +726,8 @@ def get_tts_wav(ref_wav_path, prompt_text, prompt_language, text, text_language,
         t4 = ttime()
         t.extend([t2 - t1,t3 - t2, t4 - t3])
         t1 = ttime()
+
+        
     print("%.3f\t%.3f\t%.3f\t%.3f" % (t[0], sum(t[1::3]), sum(t[2::3]), sum(t[3::3])))
     audio_opt=torch.cat(audio_opt, 0)#np.concatenate
     sr=hps.data.sampling_rate if model_version!="v3"else 24000

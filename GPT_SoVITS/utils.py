@@ -330,7 +330,6 @@ def get_logger(model_dir, filename="train.log"):
     logger.addHandler(h)
     return logger
 
-
 class HParams:
     def __init__(self, **kwargs):
         for k, v in kwargs.items():

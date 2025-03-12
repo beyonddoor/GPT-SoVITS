@@ -144,6 +144,8 @@ RESP: 无
 import argparse
 import os,re
 import sys
+import hook_proc
+from icecream import ic
 
 now_dir = os.getcwd()
 sys.path.append(now_dir)
@@ -348,6 +350,7 @@ class Gpt:
 global hz
 hz = 50
 def get_gpt_weights(gpt_path):
+    '''获取权重'''
     dict_s1 = torch.load(gpt_path, map_location="cpu")
     config = dict_s1["config"]
     max_sec = config["data"]["max_sec"]
@@ -364,6 +367,7 @@ def get_gpt_weights(gpt_path):
     return gpt
 
 def change_gpt_sovits_weights(gpt_path,sovits_path):
+    '''设置两个权重文件'''
     try:
         gpt = get_gpt_weights(gpt_path)
         sovits = get_sovits_weights(sovits_path)
@@ -907,6 +911,7 @@ logger = logging.getLogger('uvicorn')
 
 # 获取配置
 g_config = global_config.Config()
+ic(g_config)
 
 # 获取参数
 parser = argparse.ArgumentParser(description="GPT-SoVITS api")
@@ -1006,6 +1011,7 @@ if is_half:
 else:
     bert_model = bert_model.to(device)
     ssl_model = ssl_model.to(device)
+
 change_gpt_sovits_weights(gpt_path = gpt_path, sovits_path = sovits_path)
 
 
@@ -1017,6 +1023,7 @@ app = FastAPI()
 
 @app.post("/set_model")
 async def set_model(request: Request):
+    '''设置权重'''
     json_post_raw = await request.json()
     return change_gpt_sovits_weights(
         gpt_path = json_post_raw.get("gpt_model_path"), 
@@ -1029,6 +1036,7 @@ async def set_model(
         gpt_model_path: str = None,
         sovits_model_path: str = None,
 ):
+    '''设置权重'''
     return change_gpt_sovits_weights(gpt_path = gpt_model_path, sovits_path = sovits_model_path)
 
 

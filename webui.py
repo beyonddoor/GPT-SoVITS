@@ -16,7 +16,8 @@ import psutil
 import signal
 os.environ['TORCH_DISTRIBUTED_DEBUG'] = 'INFO'
 torch.manual_seed(233333)
-tmp = os.path.join(now_dir, "TEMP")
+
+tmp = my_utils.get_tmp_dir(now_dir)
 os.makedirs(tmp, exist_ok=True)
 os.environ["TEMP"] = tmp
 if(os.path.exists(tmp)):
@@ -193,20 +194,33 @@ pretrained_gpt_name,pretrained_sovits_name = _
 
 SoVITS_weight_root=["SoVITS_weights","SoVITS_weights_v2","SoVITS_weights_v3"]
 GPT_weight_root=["GPT_weights","GPT_weights_v2","GPT_weights_v3"]
+
+# 隔离权重的存放位置
+user_id = os.environ.get("SOVITS_USER_ID", None)
+if user_id:
+    SoVITS_weight_root = ["%s/%s" % (root, user_id) for root in SoVITS_weight_root]
+    GPT_weight_root = ["%s/%s" % (root, user_id) for root in GPT_weight_root]
+
 for root in SoVITS_weight_root+GPT_weight_root:
     os.makedirs(root,exist_ok=True)
+
 def get_weights_names():
+    '''底模+微调的权重'''
     SoVITS_names = [name for name in pretrained_sovits_name if name!=""]
     for path in SoVITS_weight_root:
         for name in os.listdir(path):
             if name.endswith(".pth"): SoVITS_names.append("%s/%s" % (path, name))
+
     GPT_names = [name for name in pretrained_gpt_name if name!=""]
     for path in GPT_weight_root:
         for name in os.listdir(path):
             if name.endswith(".ckpt"): GPT_names.append("%s/%s" % (path, name))
+
     return SoVITS_names, GPT_names
 
 SoVITS_names,GPT_names = get_weights_names()
+
+# FIXME 如下的代码似乎重复
 for path in SoVITS_weight_root+GPT_weight_root:
     os.makedirs(path,exist_ok=True)
 
@@ -218,8 +232,10 @@ def custom_sort_key(s):
     return parts
 
 def change_choices():
+    '''改变列表'''
     SoVITS_names, GPT_names = get_weights_names()
-    return {"choices": sorted(SoVITS_names,key=custom_sort_key), "__type__": "update"}, {"choices": sorted(GPT_names,key=custom_sort_key), "__type__": "update"}
+    return {"choices": sorted(SoVITS_names,key=custom_sort_key), "__type__": "update"}\
+        , {"choices": sorted(GPT_names,key=custom_sort_key), "__type__": "update"}
 
 p_label=None
 p_uvr5=None
@@ -406,7 +422,8 @@ def open1Ba(batch_size,total_epoch,exp_name,text_low_lr_rate,if_save_latest,
             data=f.read()
             data=json.loads(data)
 
-        s2_dir="%s/%s"%(exp_root,exp_name)
+        # s2_dir="%s/%s"%(exp_root,exp_name)
+        s2_dir = my_utils.get_output_dir(exp_name)
         os.makedirs("%s/logs_s2_%s"%(s2_dir,version),exist_ok=True)
         if check_for_existance([s2_dir],is_train=True):
             check_details([s2_dir],is_train=True)
@@ -465,7 +482,8 @@ def open1Bb(batch_size,total_epoch,exp_name,if_dpo,if_save_latest,if_save_every_
         with open("GPT_SoVITS/configs/s1longer.yaml"if version=="v1"else "GPT_SoVITS/configs/s1longer-v2.yaml")as f:
             data=f.read()
             data=yaml.load(data, Loader=yaml.FullLoader)
-        s1_dir="%s/%s"%(exp_root,exp_name)
+        # s1_dir="%s/%s"%(exp_root,exp_name)
+        s1_dir = my_utils.get_output_dir(exp_name)
         os.makedirs("%s/logs_s1"%(s1_dir),exist_ok=True)
         if check_for_existance([s1_dir],is_train=True):
             check_details([s1_dir],is_train=True)
@@ -562,7 +580,8 @@ def open1a(inp_text,inp_wav_dir,exp_name,gpu_numbers,bert_pretrained_dir):
     if check_for_existance([inp_text,inp_wav_dir], is_dataset_processing=True):
         check_details([inp_text,inp_wav_dir], is_dataset_processing=True)
     if (ps1a == []):
-        opt_dir="%s/%s"%(exp_root,exp_name)
+        opt_dir = my_utils.get_output_dir(exp_name)
+        # opt_dir="%s/%s"%(exp_root,exp_name)
         config={
             "inp_text":inp_text,
             "inp_wav_dir":inp_wav_dir,
@@ -624,6 +643,7 @@ def open1b(inp_text,inp_wav_dir,exp_name,gpu_numbers,ssl_pretrained_dir):
     global ps1b
     inp_text = my_utils.clean_path(inp_text)
     inp_wav_dir = my_utils.clean_path(inp_wav_dir)
+    opt_dir = my_utils.get_output_dir(exp_name)
     if check_for_existance([inp_text,inp_wav_dir], is_dataset_processing=True):
         check_details([inp_text,inp_wav_dir], is_dataset_processing=True)
     if (ps1b == []):
@@ -631,7 +651,7 @@ def open1b(inp_text,inp_wav_dir,exp_name,gpu_numbers,ssl_pretrained_dir):
             "inp_text":inp_text,
             "inp_wav_dir":inp_wav_dir,
             "exp_name":exp_name,
-            "opt_dir": "%s/%s"%(exp_root,exp_name),
+            "opt_dir": opt_dir,
             "cnhubert_base_dir":ssl_pretrained_dir,
             "is_half": str(is_half)
         }
@@ -678,7 +698,8 @@ def open1c(inp_text,exp_name,gpu_numbers,pretrained_s2G_path):
     if check_for_existance([inp_text,''], is_dataset_processing=True):
         check_details([inp_text,''], is_dataset_processing=True)
     if (ps1c == []):
-        opt_dir="%s/%s"%(exp_root,exp_name)
+        # opt_dir="%s/%s"%(exp_root,exp_name)
+        opt_dir = my_utils.get_output_dir(exp_name)
         config={
             "inp_text":inp_text,
             "exp_name":exp_name,
@@ -745,7 +766,8 @@ def open1abc(inp_text,inp_wav_dir,exp_name,gpu_numbers1a,gpu_numbers1Ba,gpu_numb
     if check_for_existance([inp_text,inp_wav_dir], is_dataset_processing=True):
         check_details([inp_text,inp_wav_dir], is_dataset_processing=True)
     if (ps1abc == []):
-        opt_dir="%s/%s"%(exp_root,exp_name)
+        # opt_dir="%s/%s"%(exp_root,exp_name)
+        opt_dir = my_utils.get_output_dir(exp_name)
         try:
             #############################1a
             path_text="%s/2-name2text.txt" % opt_dir
