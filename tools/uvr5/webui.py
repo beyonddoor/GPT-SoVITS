@@ -19,6 +19,7 @@ import sys
 from mdxnet import MDXNetDereverb
 from vr import AudioPre, AudioPreDeEcho
 from bsroformer import Roformer_Loader
+from icecream import ic
 
 try:
     import gradio.analytics as analytics
@@ -200,7 +201,7 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
     agg: str, 人声提取激进程度
     format0: str, 导出文件格式
     '''
-    print(f'uvr {model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0}')
+    ic('uvr', model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format0)
 
     infos = []
     try:
@@ -289,7 +290,7 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
                 print('uvr step 5')
                 if done == 0:
                     print(f"==> Start to process {inp_path}")
-                    print('uvr step 6')
+                    ic('uvr step 6', inp_path, save_root_ins, save_root_vocal, format0,is_hp3)
                     pre_fun._path_audio_(
                         inp_path, save_root_ins, save_root_vocal, format0,is_hp3
                     )

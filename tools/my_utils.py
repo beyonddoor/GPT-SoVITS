@@ -84,6 +84,8 @@ def check_details(path_list=None,is_train=False,is_dataset_processing=False):
                 return
         with open(list_path,"r",encoding="utf8")as f:
             line=f.readline().strip("\n").split("\n")
+
+        ic(line)
         wav_name, _, __, ___ = line[0].split("|")
         wav_name=clean_path(wav_name)
         if (audio_path != "" and audio_path != None):
