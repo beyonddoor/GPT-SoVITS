@@ -3,21 +3,32 @@ import hook_proc
 import os
 from subprocess import Popen
 import argparse
+from config import infer_device
 
 ################################################################
 parser = argparse.ArgumentParser()
 parser.add_argument('-id', '--user_id', type=str, required=True)
 args = parser.parse_args()
 
-user_id = args.user_id
-input_audio_dir = f"data/{user_id}/input_audio"  #放到这个目录
-output_prefix = f'output/{user_id}'
+USE_USER_SPACE = False
+
+if USE_USER_SPACE:
+    user_id = args.user_id
+    input_audio_dir = f"data/{user_id}/input_audio"  #放到这个目录
+    output_prefix = f'output/{user_id}'
+else:
+    user_id = None
+    input_audio_dir = f"data/1/input_audio"  #放到这个目录
+    output_prefix = f'output/'
+    
+
 input_format = 'm4a'
 gpus = '0-0'
 ################################################################
 
-# 传递上下文，需要尽早执行
-os.environ['SOVITS_USER_ID'] = user_id
+if USE_USER_SPACE:
+    # 传递上下文，需要尽早执行
+    os.environ['SOVITS_USER_ID'] = user_id
 
 print('import tools.uvr5.webui')
 
@@ -38,12 +49,16 @@ def wait_proc(p):
         print(f'wait proc {p}')
         p.wait()
 
+    if p.returncode != 0:
+        raise Exception(f'proc failed: {p.returncode}')
 
-def check_dir():
+
+def check_input_dir():
     if not os.path.exists(input_audio_dir):
         raise FileNotFoundError(f"input_audio_dir not found: {input_audio_dir}")
 
-    if not os.listdir(input_audio_dir):
+    dirs = os.listdir(input_audio_dir)
+    if not dirs:
         raise FileNotFoundError("input_audio_dir contains files")
 
 def uvr_data():
@@ -58,13 +73,17 @@ def uvr_data():
         save_root_ins=instrument_dir,
         agg=10,
         format0=input_format,
-        device_='cuda',
+        device_=infer_device,
         is_half_=True,
     )
 
-    ic(vocal_dir, os.listdir(vocal_dir))
-    if len(os.listdir(vocal_dir)) == 0:
-        raise FileNotFoundError("vocal_dir contains no files")
+    dirs = os.listdir(vocal_dir)
+    ic(vocal_dir, dirs)
+    if len(dirs) == 0:
+        raise FileNotFoundError(f"{vocal_dir} contains no files")
+    
+    if len([d for d in dirs if d.startswith('vocal_')]) == 0:
+        raise FileNotFoundError(f"{vocal_dir} contains no vocal files")
 
 def prepare_data():
     print(f'start slice to {slicer_dir}')
@@ -120,7 +139,7 @@ def train_data():
 
 
 if __name__ == '__main__':
-    check_dir()
+    check_input_dir()
     uvr_data()
     prepare_data()
     train_data()

@@ -27,6 +27,7 @@ from collections import OrderedDict
 from time import time as ttime
 import shutil
 from process_ckpt import my_save
+from icecream import ic
 
 
 class my_model_ckpt(ModelCheckpoint):
@@ -90,6 +91,7 @@ class my_model_ckpt(ModelCheckpoint):
 
 def main(args):
     config = load_yaml_config(args.config_file)
+    ic(config)
 
     output_dir = Path(config["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -149,8 +151,11 @@ def main(args):
         # 使用正则表达式匹配文件名中的数字部分，并按数字大小进行排序
         newest_ckpt_name = get_newest_ckpt(os.listdir(ckpt_dir))
         ckpt_path = ckpt_dir / newest_ckpt_name
-    except Exception:
+    except Exception as e:
+        logging.error('No ckpt found %s', e)
         ckpt_path = None
+        
+    ic(ckpt_dir, os.listdir(ckpt_dir), ckpt_path)
     print("ckpt_path:", ckpt_path)
     trainer.fit(model, data_module, ckpt_path=ckpt_path)
 

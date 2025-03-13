@@ -12,6 +12,7 @@ from lib.lib_v5 import spec_utils
 from lib.lib_v5.model_param_init import ModelParameters
 from lib.lib_v5.nets_new import CascadedNet
 from lib.utils import inference
+from icecream import ic
 
 
 class AudioPre:
@@ -129,14 +130,15 @@ class AudioPre:
             else:
                 head = "instrument_"
             if format in ["wav", "flac"]:
-                sf.write(
-                    os.path.join(
+                save_path = os.path.join(
                         ins_root,
                         head + "{}_{}.{}".format(name, self.data["agg"], format),
-                    ),
+                    )
+                sf.write(save_path,
                     (np.array(wav_instrument) * 32768).astype("int16"),
                     self.mp.param["sr"],
                 )  #
+                ic('sf.write1', save_path)
             else:
                 path = os.path.join(
                     ins_root, head + "{}_{}.wav".format(name, self.data["agg"])
@@ -146,6 +148,7 @@ class AudioPre:
                     (np.array(wav_instrument) * 32768).astype("int16"),
                     self.mp.param["sr"],
                 )
+                ic('sf.write2', path)
                 if os.path.exists(path):
                     opt_format_path = path[:-4] + ".%s" % format
                     os.system("ffmpeg -i %s -vn %s -q:a 2 -y" % (path, opt_format_path))
@@ -154,6 +157,10 @@ class AudioPre:
                             os.remove(path)
                         except:
                             pass
+                else:
+                    ic('path not exists', path)
+
+        # 处理vocal
         if vocal_root is not None:
             if is_hp3 == True:
                 head = "instrument_"
@@ -182,6 +189,7 @@ class AudioPre:
                 path = os.path.join(
                     vocal_root, head + "{}_{}.wav".format(name, self.data["agg"])
                 )
+                ic('sf.write3', path)
                 sf.write(
                     path,
                     (np.array(wav_vocals) * 32768).astype("int16"),
@@ -195,6 +203,8 @@ class AudioPre:
                             os.remove(path)
                         except:
                             pass
+                else:
+                    ic('path not exists', path)
 
 
 class AudioPreDeEcho:
@@ -343,14 +353,15 @@ class AudioPreDeEcho:
                 wav_vocals = spec_utils.cmb_spectrogram_to_wave(v_spec_m, self.mp)
             logger.info("%s vocals done" % name)
             if format in ["wav", "flac"]:
-                sf.write(
-                    os.path.join(
+                save_path = os.path.join(
                         vocal_root,
                         "instrument_{}_{}.{}".format(name, self.data["agg"], format),
-                    ),
+                    )
+                sf.write(path,
                     (np.array(wav_vocals) * 32768).astype("int16"),
                     self.mp.param["sr"],
                 )
+                ic('sf.write5', save_path)
             else:
                 path = os.path.join(
                     vocal_root, "instrument_{}_{}.wav".format(name, self.data["agg"])
@@ -360,6 +371,7 @@ class AudioPreDeEcho:
                     (np.array(wav_vocals) * 32768).astype("int16"),
                     self.mp.param["sr"],
                 )
+                ic('sf.write4', path)
                 if os.path.exists(path):
                     opt_format_path = path[:-4] + ".%s" % format
                     os.system("ffmpeg -i %s -vn %s -q:a 2 -y" % (path, opt_format_path))
@@ -368,3 +380,5 @@ class AudioPreDeEcho:
                             os.remove(path)
                         except:
                             pass
+                else:
+                    ic('path not exists', path)

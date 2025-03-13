@@ -4,6 +4,7 @@ from time import time as ttime
 import shutil,os
 import torch
 from tools.i18n.i18n import I18nAuto
+from icecream import ic
 
 i18n = I18nAuto()
 
@@ -11,6 +12,7 @@ def my_save(fea,path):#####fix issue: torch.save doesn't support chinese path
     dir=os.path.dirname(path)
     name=os.path.basename(path)
     tmp_path="%s.pth"%(ttime())
+    ic('my_save', dir,name,tmp_path)
     torch.save(fea,tmp_path)
     shutil.move(tmp_path,"%s/%s"%(dir,name))
 
@@ -29,6 +31,7 @@ def my_save2(fea,path):
     bio.seek(0)
     data = bio.getvalue()
     data = b'03' + data[2:]###temp for v3lora only, todo
+    ic('my_save2', path)
     with open(path, "wb") as f: f.write(data)
 
 def savee(ckpt, name, epoch, steps, hps,lora_rank=None):

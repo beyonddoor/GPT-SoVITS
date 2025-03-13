@@ -450,7 +450,8 @@ def open1Ba(batch_size,total_epoch,exp_name,text_low_lr_rate,if_save_latest,
         with open(tmp_config_path,"w")as f:
             data_str = json.dumps(data)
             f.write(data_str)
-            log_debug('==> tmp_s2.json', tmp_config_path, data_str)
+            log_debug('==> tmp_s2.json', tmp_config_path)
+            print(data_str)
 
         if version in ["v1","v2"]:
             cmd = '"%s" GPT_SoVITS/s2_train.py --config "%s"'%(python_exec,tmp_config_path)
@@ -510,7 +511,8 @@ def open1Bb(batch_size,total_epoch,exp_name,if_dpo,if_save_latest,if_save_every_
         with open(tmp_config_path, "w") as f:
             yaml_str = yaml.dump(data, default_flow_style=False)
             f.write(yaml_str)
-            log_debug('==> tmp_s1.yaml', tmp_config_path, yaml_str)
+            log_debug('==> tmp_s1.yaml', tmp_config_path)
+            print(yaml_str)
 
         # cmd = '"%s" GPT_SoVITS/s1_train.py --config_file "%s" --train_semantic_path "%s/6-name2semantic.tsv" --train_phoneme_path "%s/2-name2text.txt" --output_dir "%s/logs_s1"'%(python_exec,tmp_config_path,s1_dir,s1_dir,s1_dir)
         cmd = '"%s" GPT_SoVITS/s1_train.py --config_file "%s" '%(python_exec,tmp_config_path)
