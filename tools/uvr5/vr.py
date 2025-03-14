@@ -33,6 +33,8 @@ class AudioPre:
         cpk = torch.load(model_path, map_location="cpu")
         model.load_state_dict(cpk)
         model.eval()
+        ic('AudioPre', agg, model_path, device, is_half, tta)
+
         if is_half:
             model = model.half().to(device)
         else:
@@ -115,6 +117,9 @@ class AudioPre:
             ins_root,vocal_root = vocal_root,ins_root
 
         if ins_root is not None:
+            logger.info('%s instruments begins' % name)
+            ic(name)
+
             if self.data["high_end_process"].startswith("mirroring"):
                 input_high_end_ = spec_utils.mirroring(
                     self.data["high_end_process"], y_spec_m, input_high_end, self.mp
@@ -162,10 +167,13 @@ class AudioPre:
 
         # 处理vocal
         if vocal_root is not None:
+            logger.info('%s vocals begins' % name)
             if is_hp3 == True:
                 head = "instrument_"
             else:
                 head = "vocal_"
+
+            ic(head, name)
             if self.data["high_end_process"].startswith("mirroring"):
                 input_high_end_ = spec_utils.mirroring(
                     self.data["high_end_process"], v_spec_m, input_high_end, self.mp
@@ -209,6 +217,8 @@ class AudioPre:
 
 class AudioPreDeEcho:
     def __init__(self, agg, model_path, device, is_half, tta=False):
+        ic('AudioPreDeEcho', agg, model_path, device, is_half, tta)
+
         self.model_path = model_path
         self.device = device
         self.data = {

@@ -8,9 +8,10 @@ from config import infer_device
 ################################################################
 parser = argparse.ArgumentParser()
 parser.add_argument('-id', '--user_id', type=str, required=True)
+parser.add_argument('--seperate', type=int, default=1)
 args = parser.parse_args()
 
-USE_USER_SPACE = False
+USE_USER_SPACE = args.seperate == 1
 
 if USE_USER_SPACE:
     user_id = args.user_id
@@ -22,7 +23,7 @@ else:
     output_prefix = f'output/'
     
 
-input_format = 'm4a'
+input_format = 'mp3'
 gpus = '0-0'
 ################################################################
 
@@ -69,7 +70,9 @@ def uvr_data():
         model_name="HP2_all_vocals",  #fixme: change it
         inp_root='', 
         save_root_vocal=vocal_dir,
-        paths = [f'{input_audio_dir}/{name}' for name in os.listdir(input_audio_dir) if name.endswith(input_format)], 
+        paths = [f'{input_audio_dir}/{name}' 
+                for name in os.listdir(input_audio_dir) 
+                if name.endswith(input_format) or name.endswith('.m4a')], 
         save_root_ins=instrument_dir,
         agg=10,
         format0=input_format,
