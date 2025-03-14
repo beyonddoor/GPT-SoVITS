@@ -128,6 +128,7 @@ def run(rank, n_gpus, hps):
     #                              batch_size=1, pin_memory=True,
     #                              drop_last=False, collate_fn=collate_fn)
 
+    # 这两个模型分别做什么
     net_g = SynthesizerTrn(
         hps.data.filter_length // 2 + 1,
         hps.train.segment_size // hps.data.hop_length,
@@ -213,6 +214,8 @@ def run(rank, n_gpus, hps):
         # traceback.print_exc()
         epoch_str = 1
         global_step = 0
+
+
         if hps.train.pretrained_s2G != ""and hps.train.pretrained_s2G != None and os.path.exists(hps.train.pretrained_s2G):
             if rank == 0:
                 logger.info("loaded pretrained %s" % hps.train.pretrained_s2G)
@@ -225,6 +228,8 @@ def run(rank, n_gpus, hps):
                     strict=False,
                 )
             )  ##测试不加载优化器
+
+
         if hps.train.pretrained_s2D != ""and hps.train.pretrained_s2D != None and os.path.exists(hps.train.pretrained_s2D):
             if rank == 0:
                 logger.info("loaded pretrained %s" % hps.train.pretrained_s2D)

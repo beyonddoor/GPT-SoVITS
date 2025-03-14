@@ -123,4 +123,6 @@ def get_tmp_dir(base_dir):
     tmp = os.path.join(base_dir, "TEMP")
     if user_id:
         tmp = os.path.join(tmp, user_id)
+    else:
+        tmp = os.path.join(tmp, '__WEBUI__')
     return tmp

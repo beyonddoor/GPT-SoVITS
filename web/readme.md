@@ -10,16 +10,37 @@ nohup redis-server &
 curl -X 'POST' 'http://127.0.0.1:8000/train/' -H 'Content-Type: application/json' -d '{"user_id": "1"}'
 curl -X 'GET' 'http://127.0.0.1:8000/train/some-task-id'
 
-
+代理
 
 python GPT_SoVITS/inference_cli.py --gpt_model GPT_weights_v2/GPT-SoVITS-e10.ckpt --sovits_model SoVITS_weights_v2/GPT-SoVITS_e4_s60.pth --ref_audio data/2/infer/你好晚安.m4a --ref_text data/2/infer/你好晚安.txt --ref_language 中文 --target_text data/2/infer/infer.txt --target_language 中文 --output_path output
 
+## todo
+验证gradio的端口和工作机制
+    后续看不到启动gradio的功能了
+~~验证autodl的内网架构。lsof看不到非本地端点连接22端口。不知道是怎么做到的~~
+
+sovits训练输出到
+logs/GPT-SoVITS/logs_s2_v2
+
+gpt训练输出到
+logs/GPT-SoVITS/logs_s1_v2/
+
+这些缓存如果不clear，会跳过训练
+
+对比环境变量
+对比配置文件yaml和json
+
+pandas显示不连续的时序
+增加指定的cmd的统计进行比较，而不是全量
+增加unkown协议的打印
 
 ## 待解决问题
+1. temp路径被remove的问题
 1. cli推理下来语音模糊的问题
 2. pipeline_train处理下来vocal文件没有生成的问题。id=1
 
-似乎和用户dir分离有关
+~~似乎和用户dir分离有关~~
+这个会偶然发生，原来的webui也可能有这个问题
 
 clean_empty_cache
 ==> 1.m4a.reformatted.wav->Traceback (most recent call last):

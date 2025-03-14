@@ -6,6 +6,7 @@
 全部按英文识别
 全部按日文识别
 '''
+import hook_proc
 import logging
 import traceback,torchaudio,warnings
 logging.getLogger("markdown_it").setLevel(logging.ERROR)
@@ -727,7 +728,7 @@ def get_tts_wav(ref_wav_path, prompt_text, prompt_language, text, text_language,
         t.extend([t2 - t1,t3 - t2, t4 - t3])
         t1 = ttime()
 
-        
+
     print("%.3f\t%.3f\t%.3f\t%.3f" % (t[0], sum(t[1::3]), sum(t[2::3]), sum(t[3::3])))
     audio_opt=torch.cat(audio_opt, 0)#np.concatenate
     sr=hps.data.sampling_rate if model_version!="v3"else 24000

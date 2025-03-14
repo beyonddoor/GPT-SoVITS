@@ -49,6 +49,7 @@ class my_model_ckpt(ModelCheckpoint):
 
     def on_train_epoch_end(self, trainer, pl_module):
         # if not self._should_skip_saving_checkpoint(trainer) and self._should_save_on_train_epoch_end(trainer):
+        ic('on_train_epoch_end')
         if self._should_save_on_train_epoch_end(trainer):
             monitor_candidates = self._monitor_candidates(trainer)
             if (
@@ -59,13 +60,17 @@ class my_model_ckpt(ModelCheckpoint):
                     self.if_save_latest == True
                 ):  ####如果设置只保存最后一个ckpt，在保存下一个ckpt后要清理掉之前的所有ckpt
                     to_clean = list(os.listdir(self.dirpath))
+
+                ic(to_clean)
                 self._save_topk_checkpoint(trainer, monitor_candidates)
                 if self.if_save_latest == True:
                     for name in to_clean:
                         try:
+                            ic('remove ', "%s/%s" % (self.dirpath, name))
                             os.remove("%s/%s" % (self.dirpath, name))
                         except:
                             pass
+
                 if self.if_save_every_weights == True:
                     to_save_od = OrderedDict()
                     to_save_od["weight"] = OrderedDict()
@@ -76,7 +81,9 @@ class my_model_ckpt(ModelCheckpoint):
                     to_save_od["info"] = "GPT-e%s" % (trainer.current_epoch + 1)
                     # torch.save(
                     # print(os.environ)
+                    ic(os.environ)
                     if(os.environ.get("LOCAL_RANK","0")=="0"):
+                        ic('ready to save...')
                         my_save(
                             to_save_od,
                             "%s/%s-e%s.ckpt"
@@ -86,6 +93,9 @@ class my_model_ckpt(ModelCheckpoint):
                                 trainer.current_epoch + 1,
                             ),
                         )
+                    else:
+                        ic('no save needed')
+            
             self._save_last_checkpoint(trainer, monitor_candidates)
 
 
@@ -154,7 +164,7 @@ def main(args):
     except Exception as e:
         logging.error('No ckpt found %s', e)
         ckpt_path = None
-        
+
     ic(ckpt_dir, os.listdir(ckpt_dir), ckpt_path)
     print("ckpt_path:", ckpt_path)
     trainer.fit(model, data_module, ckpt_path=ckpt_path)

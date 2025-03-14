@@ -24,7 +24,9 @@ else:
     
 
 input_format = 'mp3'
-gpus = '0-0'
+gpus = '0'
+# gpus = '0-0'
+batch_size = 11
 ################################################################
 
 if USE_USER_SPACE:
@@ -108,7 +110,7 @@ def prepare_data():
     wait_proc(p)
 
 def train_data():
-    print('start train SoVITS')
+    print('start dataset formatting -- 一键三连')
     for msg in webui.open1abc(
         f'{asr_dir}/denoise_opt.list', 
         f'{denoise_dir}',
@@ -122,7 +124,7 @@ def train_data():
 
     print('start open1Ba')
     for msg in webui.open1Ba(
-        7,8,'GPT-SoVITS',
+        batch_size, 8,'GPT-SoVITS',
         0.4, True, True,
         4, gpus, 
         'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth',
@@ -134,7 +136,7 @@ def train_data():
 
     print('start open1Bb')
     for msg in webui.open1Bb(
-        7, 15, 'GPT-SoVITS', 
+        batch_size, 15, 'GPT-SoVITS', 
         False,True, True, 5, gpus, 
         'GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-step=369668.ckpt'
     ):
