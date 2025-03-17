@@ -1,3 +1,13 @@
+
+sudo apt-get install gcc g++ cmake
+
+# 先安装这个
+sudo apt-get install bzip2 libbz2-dev libsqlite3-dev libreadline-dev libncursesw5-dev
+pyenv uninstall 3.9.18
+pyenv install 3.9.18
+pyenv global 3.9.18  # Or whi
+python -c "import bz2; print(bz2.BZ2Compressor())"
+
 # @title Download pretrained models 下载预训练模型
 rootDir=~
 mkdir -p $rootDir/GPT-SoVITS/GPT_SoVITS/pretrained_models

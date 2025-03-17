@@ -9,6 +9,7 @@
 import hook_proc
 import logging
 import traceback,torchaudio,warnings
+
 logging.getLogger("markdown_it").setLevel(logging.ERROR)
 logging.getLogger("urllib3").setLevel(logging.ERROR)
 logging.getLogger("httpcore").setLevel(logging.ERROR)
@@ -29,12 +30,18 @@ try:
     import gradio.analytics as analytics
     analytics.version_check = lambda:None
 except:...
+
 version=model_version=os.environ.get("version","v2")
 path_sovits_v3="GPT_SoVITS/pretrained_models/s2Gv3.pth"
 is_exist_s2gv3=os.path.exists(path_sovits_v3)
-pretrained_sovits_name=["GPT_SoVITS/pretrained_models/s2G488k.pth", "GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth",path_sovits_v3]
-pretrained_gpt_name=["GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt","GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-step=369668.ckpt", "GPT_SoVITS/pretrained_models/s1v3.ckpt"]
+pretrained_sovits_name=["GPT_SoVITS/pretrained_models/s2G488k.pth",
+                        "GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth",
+                        path_sovits_v3]
+pretrained_gpt_name=["GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt",
+                     "GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-step=369668.ckpt", 
+                     "GPT_SoVITS/pretrained_models/s1v3.ckpt"]
 
+ic(version, path_sovits_v3, is_exist_s2gv3, pretrained_sovits_name, pretrained_gpt_name)
 
 
 _ =[[],[]]
@@ -42,6 +49,7 @@ for i in range(3):
     if os.path.exists(pretrained_gpt_name[i]):_[0].append(pretrained_gpt_name[i])
     if os.path.exists(pretrained_sovits_name[i]):_[-1].append(pretrained_sovits_name[i])
 pretrained_gpt_name,pretrained_sovits_name = _
+ic(pretrained_gpt_name, pretrained_sovits_name)
 
 
 if os.path.exists(f"./weight.json"):
@@ -63,6 +71,7 @@ with open(f"./weight.json", 'r', encoding="utf-8") as file:
     if isinstance(sovits_path,list):
         sovits_path = sovits_path[0]
 
+ic(gpt_path, sovits_path)
 # gpt_path = os.environ.get(
 #     "gpt_path", pretrained_gpt_name
 # )
@@ -80,6 +89,11 @@ is_share = eval(is_share)
 if "_CUDA_VISIBLE_DEVICES" in os.environ:
     os.environ["CUDA_VISIBLE_DEVICES"] = os.environ["_CUDA_VISIBLE_DEVICES"]
 is_half = eval(os.environ.get("is_half", "True")) and torch.cuda.is_available()
+
+ic(cnhubert_base_path, bert_path, infer_ttswebui, is_share, is_half)
+ic(os.environ)
+
+
 # is_half=False
 punctuation = set(['!', '?', '…', ',', '.', '-'," "])
 import gradio as gr
@@ -859,6 +873,7 @@ def process_text(texts):
 
 
 def change_choices():
+    '''刷新模型'''
     SoVITS_names, GPT_names = get_weights_names(GPT_weight_root, SoVITS_weight_root)
     return {"choices": sorted(SoVITS_names, key=custom_sort_key), "__type__": "update"}, {"choices": sorted(GPT_names, key=custom_sort_key), "__type__": "update"}
 
