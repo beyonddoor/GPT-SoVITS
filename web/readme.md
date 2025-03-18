@@ -7,7 +7,7 @@ nohup uvicorn main:app --reload &
 nohup redis-server &
 
 ## 测试
-curl -X 'POST' 'http://127.0.0.1:8000/train/' -H 'Content-Type: application/json' -d '{"user_id": "1"}'
+curl -X 'POST' 'http://127.0.0.1:8000/train/new' -H 'Content-Type: application/json' -d '{"voice_id": "1"}'
 curl -X 'GET' 'http://127.0.0.1:8000/train/some-task-id'
 
 代理

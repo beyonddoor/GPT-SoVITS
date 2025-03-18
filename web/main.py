@@ -13,11 +13,11 @@ from fastapi import File, UploadFile, Form
 from typing import Optional
 import json
 
-class TaskStatus(enum.Enum):
-    TaskStarted
-    TaskRunning
-    TaskFinish
-    TaskFail
+# class TaskStatus(enum.Enum):
+    # TaskStarted
+    # TaskRunning
+    # TaskFinish
+    # TaskFail
 
 TaskStarted = 'TaskStarted'
 TaskRunning = 'TaskRunning'

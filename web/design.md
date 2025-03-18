@@ -4,7 +4,7 @@
 http://127.0.0.1:8000/train/
 
 ### 开始训练
-POST http://127.0.0.1:8000/train/new
+POST http://127.0.0.1:8000/train
 
 输入
 ```json
@@ -40,7 +40,7 @@ GET http://127.0.0.1:8000/train/$task_id
 
 
 ### 开始推理
-POST http://127.0.0.1:8000/infer/new
+POST http://127.0.0.1:8000/infer
 
 输入
 ```json
@@ -60,15 +60,7 @@ POST http://127.0.0.1:8000/infer/new
 ```
 
 ### 查询推理结果
-POST http://127.0.0.1:8000/infer/new
-
-输入
-```json
-{
-    "voice_id": "",
-    "content": "",
-}
-```
+GET http://127.0.0.1:8000/infer/${task_id}
 
 输出
 ```json
