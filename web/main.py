@@ -12,6 +12,12 @@ import enum
 from fastapi import File, UploadFile, Form
 from typing import Optional
 import json
+import logging
+
+import logging.config
+from logconfig import LOGGING_CONFIG
+
+logging.config.dictConfig(LOGGING_CONFIG)
 
 # class TaskStatus(enum.Enum):
     # TaskStarted
@@ -39,6 +45,12 @@ def check_task_available(result):
         return False
     return True
 
+# curl命令行调用示例:
+# curl -X POST http://localhost:8000/train/ \
+#   -F "file=@/path/to/audio.wav" \
+#   -F "json_data={\"voice_id\":\"test_voice_001\"}" \
+#   -H "Content-Type: multipart/form-data"
+
 @app.post("/train/")
 async def start_train(
     file: UploadFile = File(...),
@@ -50,6 +62,7 @@ async def start_train(
     json_data: JSON格式的字符串数据
     """
     try:
+        logging.info('json_data %s', json_data)
         data = json.loads(json_data)
         file_content = await file.read()
         filename = 'audio.wav'
@@ -61,7 +74,7 @@ async def start_train(
         with open(file_path, 'wb') as f:
             f.write(file_content)
             
-        task = pipeline_train.delay(data.voice_id)
+        task = pipeline_train.delay(data['voice_id'])
         return {"task_id": task.id, "status": "TaskStarted", "result": ""}
         
     except json.JSONDecodeError:

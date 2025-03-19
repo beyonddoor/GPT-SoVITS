@@ -2,7 +2,7 @@
 
 start() {
     nohup celery -A worker.celery_app worker --loglevel=info &> /data/sovits/logs/celery.log &
-    nohup uvicorn main:app --port 8001 --reload &> /data/sovits/logs/uvicorn.log &
+    nohup uvicorn main:app --port 8001 --reload --loglevel=debug &> /data/sovits/logs/uvicorn.log &
     nohup redis-server &
 }
 
