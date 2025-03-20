@@ -8,6 +8,7 @@ from config import infer_device
 ################################################################
 parser = argparse.ArgumentParser()
 parser.add_argument('-id', '--user_id', type=str, required=True)
+parser.add_argument('--dummy', action='store_true')
 parser.add_argument('--seperate', type=int, default=1)
 args = parser.parse_args()
 
@@ -144,8 +145,15 @@ def train_data():
 
 
 if __name__ == '__main__':
+
+    if args.dummy:
+        print('dummy mode')
+        print('done')
+        exit()
+
     check_input_dir()
     uvr_data()
     prepare_data()
     train_data()
+    print('output model in *weights*/voice_id')
     print('done')
